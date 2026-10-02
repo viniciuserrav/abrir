@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Abrir na 99</title>
+<style>
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 24px; background: #fff; color: #111; }
+  h1 { font-size: 20px; margin: 0 0 8px; }
+  p { color: #555; font-size: 15px; }
+  a.btn { display: block; text-align: center; background: #ffd500; color: #111; padding: 16px; border-radius: 12px;
+          font-weight: 600; text-decoration: none; font-size: 18px; margin: 16px 0; }
+  a.small { color: #555; font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>Abrir na 99</h1>
+<p id="dest">Toque no botao para abrir o app da 99.</p>
+<a id="open" class="btn" href="#">Abrir o app da 99</a>
+<p><a class="small" href="https://play.google.com/store/apps/details?id=com.taxis99">Abrir pela Play Store</a></p>
+<script>
+  // Os parametros ficam depois do '#': o navegador nunca os envia para nenhum servidor.
+  var p = new URLSearchParams(location.hash.slice(1));
+  function num(k) { var v = parseFloat(p.get(k)); return isFinite(v) ? v : null; }
+  var olat = num('olat'), olng = num('olng'), dlat = num('dlat'), dlng = num('dlng');
+  var q = 'action=order';
+  if (olat !== null && olng !== null) q += '&origin_lat=' + olat + '&origin_lng=' + olng;
+  if (dlat !== null && dlng !== null) q += '&dest_lat=' + dlat + '&dest_lng=' + dlng;
+  var name = p.get('dname');
+  if (name) document.getElementById('dest').textContent = 'Destino: ' + name.slice(0, 120);
+  var store = 'https://play.google.com/store/apps/details?id=com.taxis99';
+  var url = /Android/i.test(navigator.userAgent)
+    ? 'intent://call?' + q + '#Intent;scheme=taxis99;package=com.taxis99;S.browser_fallback_url=' + encodeURIComponent(store) + ';end'
+    : 'taxis99://call?' + q;
+  document.getElementById('open').href = url;
+  setTimeout(function () { location.href = url; }, 300);
+</script>
+</body>
+</html>
